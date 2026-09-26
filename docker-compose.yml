@@ -1,0 +1,35 @@
+services:
+  backend:
+    build: ./backend
+    container_name: kong-lab-backend
+    ports:
+      - "3000:8000"
+
+  postgres:
+    image: postgres:16
+    container_name: kong-lab-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - kong-db-data:/var/lib/postgresql/data
+
+  kong:
+    image: kong:latest
+    container_name: kong-gateway
+    depends_on:
+      - postgres
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: postgres
+      KONG_PG_DATABASE: ${POSTGRES_DB}
+      KONG_PG_USER: ${POSTGRES_USER}
+      KONG_PG_PASSWORD: ${POSTGRES_PASSWORD}
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+
+volumes:
+  kong-db-data:
