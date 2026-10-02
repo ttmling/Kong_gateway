@@ -1,0 +1,60 @@
+_format_version: "3.0"
+consumers:
+- keyauth_credentials:
+  - key: "{KEY_AUTH_CONSUMER}"
+  username: postman-client
+services:
+- connect_timeout: 60000
+  enabled: true
+  host: backend
+  name: backend-service
+  port: 8000
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  routes:
+  - https_redirect_status_code: 426
+    id: 4d3aa6e7-2107-46e6-8dbb-a65e919c0e9d
+    path_handling: v0
+    paths:
+    - /users
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
+    request_buffering: true
+    response_buffering: true
+    strip_path: false
+  - https_redirect_status_code: 426
+    id: 86b105a8-e1f5-4ba5-b0ce-82c1e61a072f
+    path_handling: v0
+    paths:
+    - /hello
+    plugins:
+    - config:
+        anonymous: null
+        hide_credentials: false
+        key_in_body: false
+        key_in_header: true
+        key_in_query: true
+        key_names:
+        - apikey
+        realm: null
+        run_on_preflight: true
+      enabled: true
+      name: key-auth
+      protocols:
+      - grpc
+      - grpcs
+      - http
+      - https
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
+    request_buffering: true
+    response_buffering: true
+    strip_path: false
+  write_timeout: 60000
