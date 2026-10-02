@@ -1,7 +1,7 @@
 _format_version: "3.0"
 consumers:
 - keyauth_credentials:
-  - key: "{KEY_AUTH_CONSUMER}"
+  - key: "${KEY_AUTH_CONSUMER}"
   username: postman-client
 services:
 - connect_timeout: 60000
@@ -49,10 +49,35 @@ services:
       - grpcs
       - http
       - https
-    preserve_host: false
-    protocols:
-    - http
-    - https
+    - config:
+        minute: 5
+        policy: local
+        limit_by: consumer
+      enabled: true
+      name: rate-limiting
+      protocols:
+      - grpc
+      - grpcs
+      - http
+      - https
+    - name: ip-restriction
+      enabled: true
+      config:
+        deny:
+        - "172.21.0.1"
+        message: "you're blocked"
+        status: 401
+    - name: correlation-id
+      enabled: true
+      config:
+        header_name: X-Correlation-ID
+        generator: uuid
+        echo_downstream: true
+    - name: file-log
+      enabled: true
+      config:
+        path: /tmp/file.log
+        reopen: false
     regex_priority: 0
     request_buffering: true
     response_buffering: true
